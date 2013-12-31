@@ -1,8 +1,14 @@
 # We could do the following if we really wanted to prematurely optimize, but these strings are short
 # http://trephine.org/t/index.php?title=Efficient_JavaScript_string_building
-buildAttributeString = (obj) ->
+buildAttributeString = (obj,obj2) ->
   arr = []
   for own attr, val of obj
+    arr.push attr
+    arr.push "=\""
+    arr.push val
+    arr.push "\" "
+
+  for own attr, val of obj2
     arr.push attr
     arr.push "=\""
     arr.push val
@@ -11,12 +17,12 @@ buildAttributeString = (obj) ->
 
 Handlebars.registerHelper "inputAutocomplete", (settings, options) ->
   return new Handlebars.SafeString Template._inputAutocomplete
-    attributes: buildAttributeString(options.hash)
+    attributes: buildAttributeString(options.hash,{})
     ac: new AutoComplete(settings)
 
 Handlebars.registerHelper "textareaAutocomplete", (settings, options) ->
   return new Handlebars.SafeString Template._textareaAutocomplete
-    attributes: buildAttributeString(options.hash)
+    attributes: buildAttributeString(options.hash,settings.attrs)
     text: options.fn(this)
     ac: new AutoComplete(settings)
 

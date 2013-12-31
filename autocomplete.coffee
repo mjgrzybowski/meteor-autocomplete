@@ -11,7 +11,7 @@ class @AutoComplete
   constructor: (settings) ->
     @limit = settings.limit || 5
     @position = settings.position || "bottom"
-
+    @sep = settings.seperator || "bottom"
     @rules = settings.rules
     # Expressions compiled for range from last word break to current cursor position
     @expressions = (new RegExp('(^|\\b|\\s)' + rule.token + '([\\w.]*)$') for rule in @rules)
@@ -130,10 +130,10 @@ class @AutoComplete
     val = fullStuff.substring(0, startpos)
     val = val.replace(@expressions[@matched], "$1" + @rules[@matched].token + replacement)
     posfix = fullStuff.substring(startpos, fullStuff.length)
-    separator = (if posfix.match(/^\s/) then "" else " ")
+    separator = (if posfix.match(/^\s/) then "" else " ") + @sep
     finalFight = val + separator + posfix
     @setText finalFight
-    @$element.setCursorPosition val.length + 1
+    @$element.setCursorPosition finalFight.length + 1
 
   hideList: ->
     @matched = -1
